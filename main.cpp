@@ -11,6 +11,11 @@ using namespace std;
 
 
 void runComparison(const std::string& str1, const std::string& str2, bool run_recursive = true) {
+    cout << "\n==============================================" << endl;
+    cout << "Comparing algorithms for:" << endl;
+    cout << "Word 1: \"" << str1 << "\" (Length: " << str1.length() << ")" << endl;
+    cout << "Word 2: \"" << str2 << "\" (Length: " << str2.length() << ")" << endl;
+    cout << "==============================================" << endl;
 
     long long dp_duration = -1;
     long long rec_duration = -1;
@@ -25,7 +30,6 @@ void runComparison(const std::string& str1, const std::string& str2, bool run_re
         
         auto stop_dp = std::chrono::high_resolution_clock::now();
         
-        // CHANGE 1: Use nanoseconds instead of microseconds
         auto duration_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop_dp - start_dp);
         dp_duration = duration_ns.count();
     } catch (const std::exception& e) {
@@ -41,21 +45,38 @@ void runComparison(const std::string& str1, const std::string& str2, bool run_re
             
             auto stop_rec = std::chrono::high_resolution_clock::now();
             
-            // CHANGE 2: Use nanoseconds here too
             auto duration_ns_rec = std::chrono::duration_cast<std::chrono::nanoseconds>(stop_rec - start_rec);
             rec_duration = duration_ns_rec.count();
         } catch (const std::exception& e) {
              std::cerr << "An error occurred (Recursive): " << e.what() << '\n';
         }
+    } else {
+        cout << "Skipping Recursive (input too long)..." << endl;
     }
 
-    // ... (Print Result section same as before) ...
+    
+    cout << "\n----------------------------------------------" << endl;
+    cout << "FINAL RESULT" << endl;
+    cout << "----------------------------------------------" << endl;
+    
+    if (distance1 != -1) {
+        cout << "-> Edit Distance: " << distance1 << endl;
+    } else {
+        cout << "-> Edit Distance: ERROR (Calculation failed)" << endl;
+    }
+
+    if (run_recursive && distance2 != -1) {
+        if (distance1 != distance2) {
+             cout << "   (WARNING: Recursive result " << distance2 << " does not match DP result!)" << endl;
+        } else {
+             cout << "   (Verified: Both algorithms returned the same distance)" << endl;
+        }
+    }
 
     cout << "\n----------------------------------------------" << endl;
     cout << "PERFORMANCE COMPARISON (Time)" << endl;
     cout << "----------------------------------------------" << endl;
     
-    // CHANGE 3: Update print statements to show nanoseconds and microseconds
     if (dp_duration != -1) {
         cout << "-> Dynamic Programming : " << dp_duration << " ns (" << dp_duration / 1000.0 << " us)" << endl;
     } else {
